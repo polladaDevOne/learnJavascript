@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <ol id="elem">
+      <li>Привет</li>
+      <li>Мир</li>
+    </ol>
+    <ul id="customer-list"></ul>
+    <div id="container"></div>
+    <ul id="list-count">
+      <li>Животные
+        <ul>
+          <li>Млекопитающие
+            <ul>
+              <li>Коровы</li>
+              <li>Ослы</li>
+              <li>Собаки</li>
+              <li>Тигры</li>
+            </ul>
+          </li>
+          <li>Другие
+            <ul>
+              <li>Змеи</li>
+              <li>Птицы</li>
+              <li>Ящерицы</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Рыбы
+        <ul>
+          <li>Аквариумные
+            <ul>
+              <li>Гуппи</li>
+              <li>Скалярии</li>
+            </ul>
+          </li>
+          <li>Морские
+            <ul>
+              <li>Морская форель</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <div id="calendar"></div>
+    <script>
+      // 1
+      function clear(elem) {
+        let elemOl = document.getElementById('elem');
+        elemOl.innerHTML = '';
+      }
+      clear(elem);
+      // 3
+      let customerList = document.getElementById('customer-list');
+      while (true) {
+        let customerText = prompt("input your text for list item", "");
+        if (customerText === '' || customerText === null) {
+          break;
+        }
+        let li = document.createElement('li');
+        li.textContent = customerText;
+        customerList.append(li);
+      };
+      // 4
+      let data = {
+        "Рыбы": {
+          "форель": {},
+          "лосось": {}
+        },
+        "Деревья": {
+          "Огромные": {
+            "секвойя": {},
+            "дуб": {}
+          },
+          "Цветковые": {
+            "яблоня": {},
+            "магнолия": {}
+          }
+        }
+      };
+      function createTree(container, obj) {
+        container.append(createTreeDom(obj));
+      }
+      function createTreeDom(obj) {
+        let ul = document.createElement("ul");
+        for (let key in obj) {
+          let li = document.createElement("li");
+          li.textContent = key;
+          if (Object.keys(obj[key]).length != 0) {
+            let childUl = createTreeDom(obj[key]);
+            li.append(childUl);
+          }
+          ul.append(li);
+          console.log(Object.keys(obj[key]));
+        }
+        return ul;
+      };
+      let container = document.getElementById('container');
+      createTree(container, data);
+      // 5
+      let listCount = document.getElementById('list-count');
+      let listCountLi = Array.from(listCount.querySelectorAll('li'));
+      listCountLi.forEach(elem => {
+        let count = elem.querySelectorAll('li').length;
+        if (count) {
+          elem.firstChild.data += ' [' + count + ']';
+        };
+      });
+      // 6
+      let calendar1 = document.getElementById('calendar')
+      function createCalendar(elem, year, month) {
+        let actualMonth = month - 1; // месяцы в JS идут от 0 до 11, а не от 1 до 12
+        let date = new Date(year, actualMonth);
+        let table = `<table>
+                      <tr>
+                        <th>пн</th>
+                        <th>вт</th>
+                        <th>ср</th>
+                        <th>чт</th>
+                        <th>пт</th>
+                        <th>сб</th>
+                        <th>вс</th>
+                      </tr>`;
+        for (let i = 0; i < getDay(date); i++) {
+          table += '<td></td>';
+        }
+        while (date.getMonth() === actualMonth) {
+          table += '<td>' + date.getDate() + '</td>';
+          if (getDay(date) % 7 == 6) {
+            table += '</tr><tr>';
+          }
+          date.setDate(date.getDate() + 1);
+        }
+        if (getDay(date) != 0) {
+          for (let i = getDay(date); i < 7; i++) {
+            table += '<td></td>';
+          }
+        }
+        table += '</tr></table>';
+        elem.innerHTML = table;
+      }
+      function getDay(date) {
+        let day = date.getDay();
+        if (day == 0) day = 7;
+        return day - 1;
+      }
+      createCalendar(calendar, 2020, 12);
+    </script>
+  </body>
+</html>
